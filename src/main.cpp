@@ -15,13 +15,14 @@ struct sline
     int x2;
 };
 
+int theLineCount;
 std::vector<sline> theLines;
 std::pair<cxy, cxy> theVert;
 
-void genRand(int lineCount, int maxX)
+void genRand( int maxX)
 {
     srand(time(NULL));
-    for (int kl = 1; kl < lineCount; kl++)
+    for (int kl = 1; kl < theLineCount; kl++)
     {
         sline l;
         l.y = kl;
@@ -47,7 +48,7 @@ std::pair<cxy, cxy> algo()
         for (int x = l.x1; x <= l.x2; x++)
         {
             cxy le1(x, l.y);
-            cxy le2(x, 11);
+            cxy le2(x, theLineCount+1);
             for (auto &l2 : theLines)
             {
                 if (l2.y <= l.y)
@@ -60,7 +61,7 @@ std::pair<cxy, cxy> algo()
                 if (cxy::isIntersection(
                         p, le1, le2, l2e1, l2e2))
                     break;
-                if (l2.y == 9)
+                if (l2.y == theLineCount-1)
                 {
                     ret = std::make_pair(
                         le1, le2);
@@ -85,10 +86,11 @@ public:
             {
                 wex::shapes S(ps);
                 for (auto &l : theLines)
-                    S.line({10 * l.x1, 10 * l.y, 10 * l.x2, 10 * l.y});
+                    S.line({10 * l.x1, 3 * l.y, 10 * l.x2, 3 * l.y});
                 S.color(0xFF, 0, 0);
-                S.line({10 * theVert.first.x, 10 * theVert.first.y,
-                        10 * theVert.second.x, 10 * theVert.second.y});
+                S.penThick(3);
+                S.line({10 * theVert.first.x, 3 * theVert.first.y,
+                        10 * theVert.second.x, 3 * theVert.second.y});
             });
         show();
         run();
@@ -99,7 +101,8 @@ private:
 
 main()
 {
-    genRand(10, 100);
+    theLineCount = 200;
+    genRand( 100);
     theVert = algo();
     cGUI theGUI;
     return 0;
